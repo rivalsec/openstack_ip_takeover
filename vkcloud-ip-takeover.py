@@ -51,6 +51,16 @@ def subnet_from_ip(ip):
     return False
 
 
+def count_subnets():
+    c = 0
+    for subnet in subnets:
+        for pool in subnet["allocation_pools"]:
+            start = int(ipaddress.IPv4Address(pool["start"]))
+            end = int(ipaddress.IPv4Address(pool["end"]))
+            c += len(range(start, end))
+    return c
+
+
 def update_token():
     global token_time, api_catalog, token
     data = (
@@ -118,6 +128,9 @@ if __name__ == "__main__":
     update_token()
     network_url = get_network_endpoint()
     subnets = get_subnets()
+
+    sc = count_subnets()
+    print(f"all subnets ip count {sc}")
 
     #load ip, check if ip is in subnet
     with args.ipf:
